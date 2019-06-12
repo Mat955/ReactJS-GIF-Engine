@@ -5,7 +5,8 @@ App = React.createClass({
         return {
             loading: false,
             searchingText: '',
-            gif: {}
+            gif: {},
+            error: ''
         };
     },
 
@@ -14,15 +15,22 @@ App = React.createClass({
             loading: true
         });
         this.getGif(searchingText, function (gif) {
-            this.setState({
-                loading: false,
-                gif: gif,
-                searchingText: searchingText
-            });
+            if (gif) {
+                this.setState({
+                    loading: false,
+                    gif: gif,
+                    searchingText: searchingText,
+                });
+            } else {
+                this.setState({
+                    loading: false,
+                    error: alert('Something went wrong...')
+                });
+            }
         }.bind(this));
     },
 
-    getGif: function (searchingText, callback) {
+    getGif: (searchingText, callback) => {
         var url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url);
@@ -36,6 +44,9 @@ App = React.createClass({
                 callback(gif);
             }
         };
+        xhr.onerror = function () {
+            callback(null);
+        }
         xhr.send();
     },
 
@@ -55,8 +66,9 @@ App = React.createClass({
                     loading={this.state.loading}
                     url={this.state.gif.url}
                     sourceUrl={this.state.gif.sourceUrl}
+                    error={this.state.error}
                 />
-            </div>
+            </div >
         );
     }
 });
