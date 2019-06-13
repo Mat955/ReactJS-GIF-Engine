@@ -1,5 +1,3 @@
-var GIPHY_API_URL = 'https://api.giphy.com';
-var GIPHY_PUB_KEY = 'PSrjuieMUbB6xaWavXNEEZUpKPAYJqcx'
 App = React.createClass({
     getInitialState() {
         return {
@@ -15,43 +13,40 @@ App = React.createClass({
         this.setState({
             loading: true
         });
-        this.getGif(searchingText, function (gif) {
-            if (gif) {
-                this.setState({
-                    loading: false,
-                    gif: gif,
-                    searchingText: searchingText,
-                    error: '',
-                    initialized: true
-                });
-            } else {
-                this.setState({
-                    loading: false,
-                    error: 'Something went wrong..... Try Again',
-                    initialized: true
-                });
-            }
-        }.bind(this));
+        this.getGif(searchingText)
+
+            .then(gif => {
+                return gif ? this.setState({ loading: false, gif: gif, searchingText: searchingText, error: '', initialized: true })
+                    : this.setState({ loading: false, error: 'Something went wrong..... Try Again', initialized: true });
+            })
+            .catch(error => console.log('error', error))
     },
 
-    getGif: (searchingText, callback) => {
-        var url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var data = JSON.parse(xhr.responseText).data;
-                var gif = {
-                    url: data.fixed_width_downsampled_url,
-                    sourceUrl: data.url
+    getGif: searchingText => {
+        return new Promise(
+            function (resolve, reject) {
+                var GIPHY_API_URL = 'https://api.giphdy.com';
+                var GIPHY_PUB_KEY = 'PSrjuieMUbB6xaWavXNEEZUpKPAYJqcx'
+                const url = GIPHY_API_URL + "/v1/gifs/random?api_key=" + GIPHY_PUB_KEY + "&tag=" + searchingText;
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText).data;
+                        var gif = {
+                            url: data.fixed_width_downsampled_url,
+                            sourceUrl: data.url
+                        };
+                        resolve(gif);
+                    } else {
+                        reject(new Error(this.statusText));
+                    }
                 };
-                callback(gif);
-            }
-        };
-        xhr.onerror = function () {
-            callback(null);
-        }
-        xhr.send();
+                xhr.onerror = function () {
+                    reject(new Error(`XMLHttpRequest Error: ${this.statusText}`));
+                };
+                xhr.open("GET", url);
+                xhr.send();
+            });
     },
 
     render: function () {
@@ -70,7 +65,6 @@ App = React.createClass({
                     loading={this.state.loading}
                     url={this.state.gif.url}
                     sourceUrl={this.state.gif.sourceUrl}
-                    error={this.state.error}
                 />
                 {this.state.error ? <p className="error-message">{this.state.error}</p> : null}
                 {!this.state.gif.url && this.state.initialized ? <p className="error-message">Nothing found... Put Correct Name of Gif</p> : null}
