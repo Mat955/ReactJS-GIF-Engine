@@ -6,7 +6,8 @@ App = React.createClass({
             loading: false,
             searchingText: '',
             gif: {},
-            error: ''
+            error: '',
+            initialized: false
         };
     },
 
@@ -20,11 +21,14 @@ App = React.createClass({
                     loading: false,
                     gif: gif,
                     searchingText: searchingText,
+                    error: '',
+                    initialized: true
                 });
             } else {
                 this.setState({
                     loading: false,
-                    error: alert('Something went wrong...')
+                    error: 'Something went wrong..... Try Again',
+                    initialized: true
                 });
             }
         }.bind(this));
@@ -68,6 +72,8 @@ App = React.createClass({
                     sourceUrl={this.state.gif.sourceUrl}
                     error={this.state.error}
                 />
+                {this.state.error ? <p className="error-message">{this.state.error}</p> : null}
+                {!this.state.gif.url && this.state.initialized ? <p className="error-message">Nothing found... Put Correct Name of Gif</p> : null}
             </div >
         );
     }
