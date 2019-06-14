@@ -18,8 +18,8 @@ App = React.createClass({
             .then(gif => {
                 return gif = this.setState({ loading: false, gif: gif, searchingText: searchingText, error: '', initialized: true })
             })
-            .catch(gif => {
-                return gif = this.setState({ loading: false, error: 'Something went wrong..... Try Again' })
+            .catch(error => {
+                this.setState({ loading: false, error: 'Something went wrong..... Try Again' })
             })
     },
 
@@ -41,7 +41,7 @@ App = React.createClass({
                     }
                 };
                 xhr.onerror = function () {
-                    reject(null);
+                    reject(error);
                 };
                 xhr.open("GET", url);
                 xhr.send();
