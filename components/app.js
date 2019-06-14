@@ -41,7 +41,7 @@ App = React.createClass({
                     }
                 };
                 xhr.onerror = function () {
-                    reject(error);
+                    reject(null);
                 };
                 xhr.open("GET", url);
                 xhr.send();
