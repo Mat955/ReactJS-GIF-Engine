@@ -16,16 +16,17 @@ App = React.createClass({
         this.getGif(searchingText)
 
             .then(gif => {
-                return gif ? this.setState({ loading: false, gif: gif, searchingText: searchingText, error: '', initialized: true })
-                    : this.setState({ loading: false, error: 'Something went wrong..... Try Again', initialized: true });
+                return gif = this.setState({ loading: false, gif: gif, searchingText: searchingText, error: '', initialized: true })
             })
-            .catch(error => console.log('error', error))
+            .catch(gif => {
+                return gif = this.setState({ loading: false, error: 'Something went wrong..... Try Again' })
+            })
     },
 
     getGif: searchingText => {
         return new Promise(
             function (resolve, reject) {
-                var GIPHY_API_URL = 'https://api.giphdy.com';
+                var GIPHY_API_URL = 'https://api.giphy.com';
                 var GIPHY_PUB_KEY = 'PSrjuieMUbB6xaWavXNEEZUpKPAYJqcx'
                 const url = GIPHY_API_URL + "/v1/gifs/random?api_key=" + GIPHY_PUB_KEY + "&tag=" + searchingText;
                 const xhr = new XMLHttpRequest();
@@ -37,12 +38,10 @@ App = React.createClass({
                             sourceUrl: data.url
                         };
                         resolve(gif);
-                    } else {
-                        reject(new Error(this.statusText));
                     }
                 };
                 xhr.onerror = function () {
-                    reject(new Error(`XMLHttpRequest Error: ${this.statusText}`));
+                    reject(null);
                 };
                 xhr.open("GET", url);
                 xhr.send();
