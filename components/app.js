@@ -16,7 +16,7 @@ App = React.createClass({
         this.getGif(searchingText)
 
             .then(gif => {
-                return gif = this.setState({ loading: false, gif: gif, searchingText: searchingText, error: '', initialized: true })
+                this.setState({ loading: false, gif: gif, searchingText: searchingText, error: '', initialized: true })
             })
             .catch(error => {
                 this.setState({ loading: false, error: 'Something went wrong..... Try Again' })
