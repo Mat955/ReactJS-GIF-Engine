@@ -1,0 +1,12 @@
+body{
+    background-color: #f0f8ff;
+}
+.error-message {
+    font-size:30px;
+    font-weight: 700;
+    display: inline-block;
+    padding: 20px;
+    background-color: #f44336; /* Red */
+    color: white;
+    margin-bottom: 15px;
+}
